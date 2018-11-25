@@ -1,6 +1,7 @@
 import json
 import pandas as pd
 
+from strategy import preparedata
 from strategy.utils import CourseDirection, TradeState
 
 
@@ -14,7 +15,7 @@ class BaseStrategy(object):
     symbol = None
     trade_id = None
     entry = 0.0
-    exit = 0.0
+    target = 0.0
     stop = 0.0
     quantity = 0.0
     buy_dir = CourseDirection.PRICE_ABOVE
@@ -28,7 +29,7 @@ class BaseStrategy(object):
     def __init__(self,
                  symbol=None,
                  stop=0.0,
-                 exit=0.0,
+                 target=0.0,
                  gain=0.0,
                  entry=0.0,
                  course=0.0,
@@ -40,7 +41,7 @@ class BaseStrategy(object):
 
         super().__init__()
         self.tradeId = trade_id
-        self.exit = exit
+        self.target = target
         self.gain = gain
         self.entry = entry
         self.course = course
@@ -62,8 +63,7 @@ class BaseStrategy(object):
         print("fetch data for common")
         if kwargs.keys().__contains__('data'):
             self.data = kwargs['data']
-            # todo add prepare data
-            self.data = self.data
+            self.data = preparedata.add_features(self.data)
             try:
                 self.course = float(self.data['last'][-1:])
                 # print(data[:][-1:])
@@ -74,7 +74,7 @@ class BaseStrategy(object):
         if kwargs.keys().__contains__('stop'):
             self.stop = kwargs['stop']
         if kwargs.keys().__contains__('exit'):
-            self.exit = kwargs['ext']
+            self.target = kwargs['ext']
         if kwargs.keys().__contains__('entry'):
             self.entry = kwargs['entry']
 
@@ -98,10 +98,10 @@ class SimpleMomentumStrategy(BaseStrategy):
 
     def sell_trigger(self):
         if self.sell_dir == CourseDirection.PRICE_ABOVE:
-            if self.course >= self.exit:
+            if self.course >= self.target:
                 return True
         else:
-            if self.course <= self.exit:
+            if self.course <= self.target:
                 return True
         return super().sell_trigger()
 
@@ -127,10 +127,10 @@ class SimpleMovingAverageStrategy(BaseStrategy):
 
     def sell_trigger(self):
         if self.sell_dir == CourseDirection.PRICE_ABOVE:
-            if self.course >= self.exit:
+            if self.course >= self.target:
                 return True
         else:
-            if self.course <= self.exit:
+            if self.course <= self.target:
                 return True
         return super().sell_trigger()
 

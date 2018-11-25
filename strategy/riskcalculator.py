@@ -26,6 +26,8 @@ class StrategyEval:
     risk_reward_ratio = 0
     risk_reward_ratio_per = ""
     commission = 10.0
+    percentage_loss = 0.0
+    percentage_win = 0.0
 
     #  value for long add different type if bull or bear
     def _calc(self):
@@ -43,6 +45,10 @@ class StrategyEval:
         self.risk_reward_ratio_per = "1/" + str(self.risk_reward_ratio)
         self.rio = (((self.quantity * self.target) - self.investment) / self.investment)  # * -1
         self.rio_per = str(self.rio * 100) + "%"
+        self.loss_per_stock_per = (self.stop - self.entry) / self.entry
+        self.loss_per_stock = self.stop - self.entry
+        self.win_per_stock_per = (self.target - self.entry) / self.entry
+        self.win_per_stock = self.target - self.entry
 
     def eval(self, entry, target, stop, quantity, commission=10):
         self.quantity = quantity
@@ -54,7 +60,7 @@ class StrategyEval:
         return self
 
     def eval_strategy(self, strategy: BaseStrategy):
-        self.eval(strategy.entry, strategy.exit, strategy.stop, strategy.quantity)
+        self.eval(strategy.entry, strategy.target, strategy.stop, strategy.quantity)
         return self
 
     def ratio_worth(self, risk_reward_ratio=2):
@@ -66,20 +72,20 @@ class StrategyEval:
             raise StrategyException("Negative return. Trade is not worth it!")
         return positive
 
-    def eval_with_loss(self, entry, target, investment, excepted_loss, commission=10):
+    def eval_with_loss_of_investment(self, entry, target, investment, acceptable_loss, commission=10):
         self.commission = commission
-        if type(excepted_loss) is str:
-            excepted_loss_percent = str(excepted_loss).replace("%", "")
+        if type(acceptable_loss) is str:
+            excepted_loss_percent = str(acceptable_loss).replace("%", "")
             try:
                 excepted_loss_percent = int(excepted_loss_percent) / 100
             except TypeError:
                 pass
-            excepted_loss = investment * excepted_loss_percent
+            acceptable_loss = investment * excepted_loss_percent
 
         self.entry = entry
         self.target = target
         self.quantity = math.floor((investment - self.commission) / self.entry)
-        loss_per_share = (excepted_loss / self.quantity)
+        loss_per_share = (acceptable_loss / self.quantity)
         self.stop = self.entry - loss_per_share
         self._calc()
         return self

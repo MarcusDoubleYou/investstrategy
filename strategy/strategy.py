@@ -1,7 +1,7 @@
 import json
 import pandas as pd
 
-from strategy.common.utils import CourseDirection, TradeState
+from strategy.utils import CourseDirection, TradeState
 
 
 def remove_key(d, key):

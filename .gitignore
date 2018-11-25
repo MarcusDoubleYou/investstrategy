@@ -4,6 +4,8 @@
 
 # IntelliJ project files
 .idea
+.idea/.*
+.idea/workspace.xml
 *.iml
 out
 gen### Python template
@@ -112,3 +114,4 @@ venv.bak/
 # mypy
 .mypy_cache/
 
+strategy/common/

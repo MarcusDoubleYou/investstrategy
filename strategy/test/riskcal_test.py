@@ -1,6 +1,6 @@
 import unittest
 
-from strategy.common.riskcalculator import StrategyEval
+from strategy.riskcalculator import StrategyEval
 
 
 class RiskCalTests(unittest.TestCase):

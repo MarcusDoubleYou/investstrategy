@@ -1,7 +1,7 @@
 import json
 import math
 
-from strategy.strategy import BaseStrategy
+from strategy.strategy_eval import BaseStrategy
 
 
 class StrategyException(Exception):

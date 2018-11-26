@@ -28,6 +28,10 @@ class StrategyEval:
     commission = 10.0
     percentage_loss = 0.0
     percentage_win = 0.0
+    loss_per_stock_per = 0.0
+    loss_per_stock = 0.0
+    win_per_stock_per = 0.0
+    win_per_stock = 0.0
 
     #  value for long add different type if bull or bear
     def _calc(self):

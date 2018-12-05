@@ -1,0 +1,19 @@
+{
+  "state": "WATCHING",
+  "active": false,
+  "symbol": "aapl",
+  "mock": false,
+  "strategy": {
+    "buy_trigger": "price::>::99.0",
+    "sell_trigger": "price::<::999.0",
+    "stop": 9,
+    "quantity": 10,
+    "buy_order": "MARKET",
+    "sell_order": "MARKET",
+    "commission": 10
+  },
+  "created_at": "Fri Dec  7 19:25:28 2018",
+  "updated_at": "Fri Dec  7 19:25:28 2018",
+  "activity_history": [],
+  "state_history": []
+}

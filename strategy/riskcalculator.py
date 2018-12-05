@@ -1,13 +1,18 @@
 import json
 import math
 
-from strategy.strategy_eval import BaseStrategy
+from strategy.strategies import BaseStrategy
 
 
 class StrategyException(Exception):
 
     def __init__(self, *args: object, **kwargs: object) -> None:
         super().__init__(*args, **kwargs)
+
+
+'''
+static class
+'''
 
 
 class StrategyEval:

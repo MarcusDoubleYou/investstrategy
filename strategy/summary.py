@@ -1,5 +1,6 @@
-import json
+# todo potentially merge TradeSummary and Trade or add TradeSummary to trade
 import datetime
+import json
 
 
 class TradeSummary:

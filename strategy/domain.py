@@ -1,9 +1,7 @@
 import json
-from collections import namedtuple
 
 from strategy.summary import TradeSummary
-from strategy.trigger import TradeTrigger
-from strategy.utils import remove_key, TradeState, OrderType, ProjectTime
+from strategy.utils import TradeState, OrderType, ProjectTime
 
 '''
 dynamic parts that can be updated 
@@ -55,8 +53,10 @@ class Trade:
     created_at = None
     updated_at = None
 
-    def __init__(self, symbol=None, strategy=None, mock=True, state=TradeState.WATCHING, active=True) -> None:
+    def __init__(self, symbol=None, strategy=None, mock=True, state=TradeState.WATCHING, active=True,
+                 bought=None) -> None:
         super().__init__()
+        self.bought = bought
         self.state = state
         self.active = active
         self.symbol = symbol
@@ -86,7 +86,6 @@ class Trade:
         if format_type == "json_file" and path is not None:
             with open(path, "r") as f:
                 self = self._convert_from_json(f.read())
-
         else:
             raise IOError("Trade cannot be refreshed")
         pass
@@ -94,28 +93,37 @@ class Trade:
 
     def _convert_from_json(self, j):
         dict = json.loads(j)
-        self.active = dict['active']
-        self.state = dict['state']
-        self.symbol = dict['symbol']
-        self.created_at = dict['created_at']
-        self.mock = dict['mock']
-        self.updated_at = dict['updated_at']
-        self.state_history = dict['state_history']
-        self.activity_history = dict['activity_history']
+        self.active = dict.get('active', self.active)
+        self.state = dict.get('state', self.state)
+        self.symbol = dict.get('symbol', self.symbol)
+        self.created_at = dict.get('created_at', self.created_at)
+        self.mock = dict.get('mock', self.mock)
+        self.updated_at = dict.get('updated_at', self.updated_at)
+        self.state_history = dict.get('state_history', self.state_history)
+        self.activity_history = dict.get('activity_history', self.activity_history)
+        self.bought = dict.get('bought', self.bought)
 
-        strategy_dict = dict['strategy']
-        self.strategy = TradeStrategy(buy_trigger=strategy_dict['buy_trigger'],
-                                      sell_trigger=strategy_dict['sell_trigger'],
-                                      stop=strategy_dict['stop_trigger'],
-                                      quantity=strategy_dict['quantity']
-                                      )
+        strategy_dict = dict.get('strategy', self.strategy)
+        # would fail if loaded without having class init first
+        if self.strategy is None:
+            self.strategy = TradeStrategy(buy_trigger=strategy_dict.get('buy_trigger'),
+                                          sell_trigger=strategy_dict.get('sell_trigger'),
+                                          stop=strategy_dict.get('stop_trigger'),
+                                          quantity=strategy_dict.get('quantity')
+                                          )
+        else:
+            self.strategy = TradeStrategy(buy_trigger=strategy_dict.get('buy_trigger', self.strategy.buy_trigger),
+                                          sell_trigger=strategy_dict.get('sell_trigger', self.strategy.sell_trigger),
+                                          stop=strategy_dict.get('stop_trigger', self.strategy.stop_trigger),
+                                          quantity=strategy_dict.get('quantity', self.strategy.quantity)
+                                          )
+
         return self
 
     def refresh(self, format_type="json_file", path=None):
         if format_type == "json_file" and path is not None:
             with open(path, "r") as f:
                 self.strategy = self._convert_from_json(f.read()).strategy
-
         else:
             raise IOError("Trade cannot be refreshed")
         pass

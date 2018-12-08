@@ -7,6 +7,11 @@ from strategy.domain import Trade, TradeSummary
 from strategy.trigger import SimpleTrigger
 from strategy.utils import TradeState, ProjectTime
 
+"""
+manages state of trade 
++ data feeder 
+"""
+
 
 class Trader:
     trade: Trade = None
@@ -75,9 +80,9 @@ class Trader:
     def place_order(self, buy=False):
         d = ProjectTime().string_time()
         if buy:
-            print(d + " ACTION: Placed Buy order", self.trade.symbol)
+            print(d + " ACTION: Placed Buy order ", self.trade.symbol)
         else:
-            print(d + " ACTION: Placed sell order", self.trade.symbol)
+            print(d + " ACTION: Placed sell order ", self.trade.symbol)
         pass
 
     def waiting_to_fulfil_order(self):

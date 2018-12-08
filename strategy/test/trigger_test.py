@@ -3,9 +3,8 @@ import unittest
 
 import numpy as np
 
-from strategy.domain import TradeStrategy, SimpleTrigger
 from strategy.test.mock_emitter import Emitter
-from strategy.trigger import IndicatorTrigger
+from strategy.trigger import IndicatorTrigger, SimpleTrigger
 
 
 class TriggerTests(unittest.TestCase):

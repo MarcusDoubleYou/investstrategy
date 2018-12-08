@@ -18,7 +18,7 @@ class TradeStrategy:
     quantity = 0
     commission = 10
     # TODO should be stop trigger and stop order as well
-    stop = 0
+    stop_trigger = 0
 
     def __init__(self
                  , buy_trigger
@@ -33,7 +33,7 @@ class TradeStrategy:
         super().__init__()
         self.buy_trigger = buy_trigger
         self.sell_trigger = sell_trigger
-        self.stop = stop
+        self.stop_trigger = stop
         self.quantity = quantity
         self.buy_order = buy_order
         self.sell_order = sell_order
@@ -106,7 +106,7 @@ class Trade:
         strategy_dict = dict['strategy']
         self.strategy = TradeStrategy(buy_trigger=strategy_dict['buy_trigger'],
                                       sell_trigger=strategy_dict['sell_trigger'],
-                                      stop=strategy_dict['stop'],
+                                      stop=strategy_dict['stop_trigger'],
                                       quantity=strategy_dict['quantity']
                                       )
         return self

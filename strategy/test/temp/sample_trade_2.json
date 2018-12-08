@@ -6,7 +6,7 @@
   "strategy": {
     "buy_trigger": "price::>::99.0",
     "sell_trigger": "price::<::999.0",
-    "stop": 9,
+    "stop_trigger": "price::>::555.0",
     "quantity": 10,
     "buy_order": "MARKET",
     "sell_order": "MARKET",

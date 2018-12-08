@@ -27,8 +27,9 @@ class Trader:
 
     def sell(self):
         t = SimpleTrigger(self.trade.strategy.sell_trigger)
-        t.eval_trigger_condition(self.data)
-        if t.eval_trigger_condition(self.data):
+        # if type(self.trade.strategy.stop_trigger) == float:
+        stop = SimpleTrigger(self.trade.strategy.stop_trigger)
+        if t.eval_trigger_condition(self.data) or stop.eval_trigger_condition(self.data):
             self.place_order(buy=False)
         pass
 

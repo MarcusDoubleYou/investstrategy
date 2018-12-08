@@ -1,4 +1,3 @@
-import pandas as pd
 import unittest
 
 from strategy.domain import TradeStrategy, Trade
@@ -14,7 +13,8 @@ class TradingIntegrationTests(unittest.TestCase):
 
     def test_trade_buy_sell(self):
         e = Emitter()
-        strategy = TradeStrategy(buy_trigger="price::>::2.0", sell_trigger="price::>::7.0", stop=9.0, quantity=10)
+        strategy = TradeStrategy(buy_trigger="price::>::2.0", sell_trigger="price::>::7.0", stop="price::<::5.0",
+                                 quantity=10)
         trade = Trade(symbol="mock", strategy=strategy, mock=True)
         trader = MockTrader(trade)
         while e.not_finished() and trader.trade.active:
@@ -22,10 +22,12 @@ class TradingIntegrationTests(unittest.TestCase):
 
         self.assertFalse(trader.trade.active)
         self.assertEqual(trader.trade.state, TradeState.FINISHED)
+        self.assertIsNotNone(trader.trade.state_history)
 
     def test_trade_dont_buy(self):
         e = Emitter()
-        strategy = TradeStrategy(buy_trigger="price::>::20.0", sell_trigger="price::>::7.0", stop=9.0, quantity=10)
+        strategy = TradeStrategy(buy_trigger="price::>::20.0", sell_trigger="price::>::7.0", stop="price::<::5.0",
+                                 quantity=10)
         trade = Trade(symbol="mock", strategy=strategy, mock=True)
         trader = MockTrader(trade)
         while e.not_finished() and trader.trade.active:
@@ -36,7 +38,8 @@ class TradingIntegrationTests(unittest.TestCase):
 
     def test_trade_buy_holding(self):
         e = Emitter()
-        strategy = TradeStrategy(buy_trigger="price::>::2.0", sell_trigger="price::>::17.0", stop=9.0, quantity=10)
+        strategy = TradeStrategy(buy_trigger="price::>::2.0", sell_trigger="price::>::20.0", stop="price::<::0.5",
+                                 quantity=10)
         trade = Trade(symbol="mock", strategy=strategy, mock=True)
         trader = MockTrader(trade)
         while e.not_finished() and trader.trade.active:
@@ -44,6 +47,19 @@ class TradingIntegrationTests(unittest.TestCase):
 
         self.assertTrue(trader.trade.active)
         self.assertEqual(trader.trade.state, TradeState.HOLDING)
+
+    def test_trade_buy_stop_activated(self):
+        e = Emitter()
+        # stop should sell
+        strategy = TradeStrategy(buy_trigger="price::>::2.0", sell_trigger="price::>::20.0", stop="price::<::10.0",
+                                 quantity=10)
+        trade = Trade(symbol="mock", strategy=strategy, mock=True)
+        trader = MockTrader(trade)
+        while e.not_finished() and trader.trade.active:
+            trader.follow_course(data=e.emit())
+
+        self.assertFalse(trader.trade.active)
+        self.assertEqual(trader.trade.state, TradeState.FINISHED)
 
 
 if __name__ == '__main__':

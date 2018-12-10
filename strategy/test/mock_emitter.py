@@ -8,6 +8,7 @@ def rand_df(self):
                         columns=['price', 'vl', 'open', 'close', 'hi'])
 
 
+@DeprecationWarning
 class Emitter:
     _data = None
     _index = 0
@@ -22,9 +23,12 @@ class Emitter:
 
         super().__init__()
 
-    def emit(self):
+    def emit(self, full=True):
         self._index = self._index + 1
-        return self._data[self._index - 1:self._index]
+        if full:
+            return self._data.iloc[:self._index]
+        else:
+            return self._data[self._index - 1:self._index]
 
     def not_finished(self):
         return self._index < self._data.shape[0]

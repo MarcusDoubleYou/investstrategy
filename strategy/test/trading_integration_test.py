@@ -1,6 +1,7 @@
 import unittest
 
 from strategy.domain import TradeStrategy, Trade
+from strategy.feeder import MockEmitter
 from strategy.test.mock_emitter import Emitter
 from strategy.trader import MockTrader
 from strategy.utils import TradeState
@@ -12,7 +13,7 @@ class TradingIntegrationTests(unittest.TestCase):
         return Emitter()._data
 
     def test_trade_buy_sell(self):
-        e = Emitter()
+        e = MockEmitter()
         strategy = TradeStrategy(buy_trigger="price::>::2.0", sell_trigger="price::>::7.0", stop="price::<::5.0",
                                  quantity=10)
         trade = Trade(symbol="mock", strategy=strategy, mock=True)
@@ -25,7 +26,7 @@ class TradingIntegrationTests(unittest.TestCase):
         self.assertIsNotNone(trader.trade.state_history)
 
     def test_trade_dont_buy(self):
-        e = Emitter()
+        e = MockEmitter()
         strategy = TradeStrategy(buy_trigger="price::>::20.0", sell_trigger="price::>::7.0", stop="price::<::5.0",
                                  quantity=10)
         trade = Trade(symbol="mock", strategy=strategy, mock=True)
@@ -37,7 +38,7 @@ class TradingIntegrationTests(unittest.TestCase):
         self.assertEqual(trader.trade.state, TradeState.WATCHING)
 
     def test_trade_buy_holding(self):
-        e = Emitter()
+        e = MockEmitter()
         strategy = TradeStrategy(buy_trigger="price::>::2.0", sell_trigger="price::>::20.0", stop="price::<::0.5",
                                  quantity=10)
         trade = Trade(symbol="mock", strategy=strategy, mock=True)
@@ -49,7 +50,7 @@ class TradingIntegrationTests(unittest.TestCase):
         self.assertEqual(trader.trade.state, TradeState.HOLDING)
 
     def test_trade_buy_stop_activated(self):
-        e = Emitter()
+        e = MockEmitter()
         # stop should sell
         strategy = TradeStrategy(buy_trigger="price::>::2.0", sell_trigger="price::>::20.0", stop="price::<::10.0",
                                  quantity=10)

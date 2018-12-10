@@ -2,21 +2,25 @@
  when ever it receive an updated based on the state of the trade it evaluates and makes a decision
  responsible for state management
 '''
+import json
 
 from strategy.domain import Trade, TradeSummary
 from strategy.trigger import SimpleTrigger
 from strategy.utils import TradeState, ProjectTime
 
-"""
-manages state of trade 
-+ data feeder 
-"""
-
 
 class Trader:
+    """
+    Basic Trader
+    manages state of trade
+    data feeder
+
+    to integrate with different broker just subclass trader and overwrite/ implement data
+    """
+
     trade: Trade = None
     data = None
-    feeder = None
+    emitter = None
 
     def __init__(self, trade) -> None:
         super().__init__()
@@ -39,6 +43,12 @@ class Trader:
         pass
 
     def follow_course(self, **kwargs):
+        """
+        entry point for receiving new data and acting based on state
+        todo add preprocessor for data e.g. add moving averages
+        :param kwargs:
+        :return:
+        """
         if kwargs.keys().__contains__('data'):
             self.data = kwargs['data']
 
@@ -91,8 +101,15 @@ class Trader:
     def update_strategy(self):
         pass
 
+    def to_json(self):
+        return json.dumps(self.__dict__, default=lambda o: o.to_json())
+
 
 class MockTrader(Trader):
+    """
+    Mock trader => all transaction are successful immediately
+
+    """
 
     def place_order(self, buy=False):
         super().place_order(buy)

@@ -1,6 +1,7 @@
 import json
 import math
 
+from strategy.domain import TradeStrategy
 from strategy.strategies import BaseStrategy
 
 
@@ -11,7 +12,9 @@ class StrategyException(Exception):
 
 
 '''
+TODO evaluates and creates trade strategies
 static class
+currently only works for bull stocks
 '''
 
 
@@ -66,6 +69,8 @@ class StrategyEval:
         self.stop = stop
         self._calc()
         self.commission = commission
+        if not stop < entry < target:
+            raise Exception("strategy has invalid values verify entry, target and stop")
         return self
 
     def eval_strategy(self, strategy: BaseStrategy):
@@ -98,6 +103,12 @@ class StrategyEval:
         self.stop = self.entry - loss_per_share
         self._calc()
         return self
+
+    def create_trade_strategy(self, strategy_type="simple_increasing"):
+        return TradeStrategy(buy_trigger="price::>::" + self.entry,
+                             sell_trigger="price::>::" + self.target,
+                             stop="price::<::" + self.stop,
+                             quantity=self.quantity)
 
     def json(self, log=True):
         j = json.dumps(self.__dict__)

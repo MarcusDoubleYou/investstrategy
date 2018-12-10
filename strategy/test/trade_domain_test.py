@@ -36,16 +36,44 @@ class RiskCalTests(unittest.TestCase):
         self.assertEqual(refreshed.strategy.sell_trigger, "price::<::999.0")
         self.assertEqual(refreshed.strategy.stop_trigger, "price::>::555.0")
 
-    def test_load_json(self):
-        path_refresh = "temp/sample_trade_2.json"
+    def test_load_json_file(self):
+        path_load = "temp/sample_trade_2.json"
 
-        refreshed = Trade().load(path=path_refresh)
+        refreshed = Trade().load(path=path_load)
         self.assertIsNotNone(refreshed)
         self.assertEqual(refreshed.symbol, "aapl")
         self.assertEqual(refreshed.active, False)
         self.assertEqual(refreshed.mock, False)
         self.assertEqual(refreshed.strategy.buy_trigger, "price::>::99.0")
         self.assertEqual(refreshed.strategy.sell_trigger, "price::<::999.0")
+
+    def test_load_json_string(self):
+        path_load = "temp/sample_trade_2.json"
+        with open(path_load, "r") as f:
+            json_body = f.read()
+            refreshed = Trade().load(json_string=json_body)
+
+            self.assertIsNotNone(refreshed)
+            self.assertEqual(refreshed.symbol, "aapl")
+            self.assertEqual(refreshed.active, False)
+            self.assertEqual(refreshed.mock, False)
+            self.assertEqual(refreshed.strategy.buy_trigger, "price::>::99.0")
+            self.assertEqual(refreshed.strategy.sell_trigger, "price::<::999.0")
+
+    def test_refresh_json_string(self):
+        path = "temp/sample_trade.json"
+        path_refresh = "temp/sample_trade_2.json"
+
+        s = TradeStrategy(buy_trigger="hi::>::10.0", sell_trigger="lo::<::11.0", stop="lo::<::11.0", quantity=10)
+        t = Trade(symbol="mock", strategy=s, mock=True)
+
+        with open(path_refresh, "r") as f:
+            json_body = f.read()
+            refreshed = t.refresh(json_string=json_body)
+            self.assertIsNotNone(refreshed)
+            self.assertEqual(refreshed.strategy.buy_trigger, "price::>::99.0")
+            self.assertEqual(refreshed.strategy.sell_trigger, "price::<::999.0")
+            self.assertEqual(refreshed.strategy.stop_trigger, "price::>::555.0")
 
 
 if __name__ == '__main__':

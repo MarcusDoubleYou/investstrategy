@@ -82,10 +82,12 @@ class Trade:
             raise IOError("Trade cannot be written to file")
         pass
 
-    def load(self, format_type="json_file", path=None):
+    def load(self, format_type="json_file", path=None, json_string=None):
         if format_type == "json_file" and path is not None:
             with open(path, "r") as f:
                 self = self._convert_from_json(f.read())
+        elif json_string is not None:
+            self = self._convert_from_json(json_string)
         else:
             raise IOError("Trade cannot be refreshed")
         pass
@@ -120,10 +122,12 @@ class Trade:
 
         return self
 
-    def refresh(self, format_type="json_file", path=None):
+    def refresh(self, format_type="json_file", path=None, json_string=None):
         if format_type == "json_file" and path is not None:
             with open(path, "r") as f:
                 self.strategy = self._convert_from_json(f.read()).strategy
+        elif json_string is not None:
+            self.strategy = self._convert_from_json(json_string).strategy
         else:
             raise IOError("Trade cannot be refreshed")
         pass

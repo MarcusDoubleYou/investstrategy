@@ -2,6 +2,8 @@
 import datetime
 import json
 
+from strategy.utils import ProjectTime
+
 
 class TradeSummary:
     symbol = None
@@ -20,24 +22,21 @@ class TradeSummary:
         super().__init__()
         self.commission = commission
         self.quantity = quantity
-        self.buy_price = buy_price
+        self.buy_price = float(buy_price)
         self.symbol = symbol
-        self.start_time = datetime.datetime.now().ctime()
+        self.start_time = ProjectTime().string_time()
 
-    def finished(self, sell_price):
-        self.end_time = datetime.datetime.now().ctime()
+    def finish(self, sell_price):
+        self.end_time = ProjectTime().string_time()
         # self.holding_time = self.end_time - self.start_time
-        self.sell_price = sell_price
-        self.gain = (sell_price - self.buy_price) * self.quantity - self.commission
-
-    def json(self, log=False):
-        j = json.dumps(self.__dict__)
-        if log:
-            print(j)
-        return j
+        self.sell_price = float(sell_price)
+        self.gain = float((sell_price - self.buy_price) * self.quantity - self.commission)
+        return self
 
     def to_json(self, log=False):
-        j = json.dumps(self.__dict__)
-        if log:
-            print(j)
-        return j
+        # # TODO gets mapped as a string rather than a objects
+        # j = json.dumps(self.__dict__).replace("\"", "'")
+        # if log:
+        #     print(j)
+        # return j
+        return self.__dict__

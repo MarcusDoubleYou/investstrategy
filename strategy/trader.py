@@ -85,6 +85,8 @@ class Trader:
 
     def finish(self):
         self.trade.active = False
+        # todo get trade summary from broker and use this instead
+        print("WARNING no summary is produced for real trades.")
         pass
 
     def place_order(self, buy=False):
@@ -123,12 +125,17 @@ class MockTrader(Trader):
         if self.trade.state == TradeState.PLACED_BUY_ORDER:
             print("order has been placed waiting to be fulfilled ")
             self.change_state(TradeState.HOLDING)
+            self.trade.buy_price = float(self.data.tail(1)['last'].values[0])
         elif self.trade.state == TradeState.PLACED_SELL_ORDER:
-            self.trade.summary = TradeSummary(symbol=self.trade.symbol, buy_price=self.data['price'].values[-1],
-                                              quantity=self.trade.strategy.quantity)
+            self.finish()
             self.change_state(TradeState.FINISHED)
             # self.summary.finished(self.course)
             # self.summary.json()
+
+    def finish(self):
+        super().finish()
+        self.trade.finish(self.data.tail(1)['last'].values[0])
+        self.trade.persist(path="temp")
 
 
 class AgentTrader(Trader):

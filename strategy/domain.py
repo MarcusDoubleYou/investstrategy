@@ -70,10 +70,10 @@ class Trade:
     _path = None
 
     def __init__(self, symbol=None, strategy=None, mock=True, state=TradeState.WATCHING, active=True,
-                 bought=None, trade_id=None) -> None:
+                 buy_price=None, trade_id=None) -> None:
         super().__init__()
 
-        self.bought = bought
+        self.buy_price = buy_price
         self.state = state
         self.active = active
         self.symbol = symbol
@@ -142,7 +142,7 @@ class Trade:
         self.updated_at = dict.get('updated_at', self.updated_at)
         self.state_history = dict.get('state_history', self.state_history)
         self.activity_history = dict.get('activity_history', self.activity_history)
-        self.bought = dict.get('bought', self.bought)
+        self.buy_price = dict.get('buy_price', self.buy_price)
         self.trade_id = dict.get('trade_id ', self.trade_id)
 
         strategy_dict = dict.get('strategy', self.strategy)
@@ -176,6 +176,14 @@ class Trade:
             raise IOError("Trade cannot be refreshed")
         pass
         return self
+
+    # todo rethink if this should live inside of trade
+    def finish(self, sell_price):
+        summary = TradeSummary(symbol=self.symbol, buy_price=self.buy_price, quantity=self.strategy.quantity,
+                               commission=self.strategy.commission)
+        summary.finish(sell_price)
+        self.summary = summary
+        return summary
 
 
 class TradeOrder:

@@ -7,7 +7,7 @@ from strategy.domain import TradeStrategy, Trade
 from strategy.utils import ProjectTime
 
 
-class RiskCalTests(unittest.TestCase):
+class TradeStrategyTest(unittest.TestCase):
 
     def test_clean_temp(self):
         folder = 'temp'

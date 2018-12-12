@@ -32,7 +32,7 @@ json.dumps(remove_key(self.__dict__, 'data'))
 class ProjectTime:
     @staticmethod
     def string_time():
-        return datetime.datetime.now().ctime()
+        return datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
 
 
 def remove_key(d, key):

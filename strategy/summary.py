@@ -1,5 +1,4 @@
 # todo potentially merge TradeSummary and Trade or add TradeSummary to trade
-import datetime
 import json
 
 from strategy.utils import ProjectTime
@@ -30,13 +29,14 @@ class TradeSummary:
         self.end_time = ProjectTime().string_time()
         # self.holding_time = self.end_time - self.start_time
         self.sell_price = float(sell_price)
-        self.gain = float((sell_price - self.buy_price) * self.quantity - self.commission)
+        self.gain = float((self.sell_price - self.buy_price) * int(self.quantity) - self.commission)
         return self
 
-    def to_json(self, log=False):
-        # # TODO gets mapped as a string rather than a objects
-        # j = json.dumps(self.__dict__).replace("\"", "'")
-        # if log:
-        #     print(j)
-        # return j
+    def to_json(self):
         return self.__dict__
+
+    def json(self, log=True):
+        j = json.dumps(self.__dict__)
+        if log:
+            print(j)
+        return j

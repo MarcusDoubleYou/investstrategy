@@ -4,21 +4,15 @@ import unittest
 import os, shutil
 
 from strategy.domain import TradeStrategy, Trade
+from strategy.test import utils
 from strategy.utils import ProjectTime
 
 
 class TradeStrategyTest(unittest.TestCase):
 
-    def test_clean_temp(self):
-        folder = 'temp'
-        for the_file in os.listdir(folder):
-            file_path = os.path.join(folder, the_file)
-            try:
-                if os.path.isfile(file_path):
-                    os.unlink(file_path)
-                # elif os.path.isdir(file_path): shutil.rmtree(file_path)
-            except Exception as e:
-                print(e)
+    def tearDown(self):
+        utils.clean_temp_directory()
+        super().setUp()
 
     def test_time(self):
         self.assertIsNotNone(ProjectTime().string_time())

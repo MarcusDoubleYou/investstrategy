@@ -36,13 +36,16 @@ class MockEmitter(Emitter):
     _index = 0
     _mock_data = None
 
-    def __init__(self, data=None, index=0, len=20) -> None:
+    def __init__(self, data=None, index=0, len=20, data_path=None) -> None:
         """
 
         :param data: gets assigned to mock holds entire data
         :param index: start index
         :param len:
         """
+        if data_path is not None and data is None:
+            data = pd.read_csv(data_path)
+
         if data is None:
             self._data = pd.DataFrame(np.random.randint(low=1, high=10, size=(len, 6)),
                                       columns=['price', 'vl', 'open', 'close', 'hi', 'last'])

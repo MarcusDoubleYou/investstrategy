@@ -2,12 +2,17 @@ import unittest
 
 from strategy.domain import TradeStrategy, Trade
 from strategy.feeder import MockEmitter
+from strategy.test import utils
 from strategy.test.mock_emitter import Emitter
 from strategy.trader import MockTrader
 from strategy.utils import TradeState
 
 
 class TradingIntegrationTests(unittest.TestCase):
+
+    def tearDown(self):
+        utils.clean_temp_directory()
+        super().setUp()
 
     def rand_df(self):
         return Emitter()._data

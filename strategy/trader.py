@@ -140,3 +140,11 @@ class MockTrader(Trader):
 
 class AgentTrader(Trader):
     pass
+
+
+class TrainableAgent(Trader):
+    """
+    target is gain => needs to be constantly updated
+    forcast stock price based on time series prediction and then run simulation to find optimum
+    """
+    pass

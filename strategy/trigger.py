@@ -40,6 +40,12 @@ description => df_variable::comparator::target_value::trigger_type
 '''
 
 
+class TriggerException(Exception):
+
+    def __init__(self, *args: object, **kwargs: object) -> None:
+        super().__init__(*args, **kwargs)
+
+
 def trigger_parts(trigger_description):
     parts = trigger_description.split("::")
     if parts.__len__() == 3:
@@ -47,7 +53,7 @@ def trigger_parts(trigger_description):
     elif parts.__len__() == 4:
         return parts[0], parts[1], parts[2], parts[3]
     else:
-        raise NotImplementedError("trigger description cannot be parsed")
+        raise TriggerException("trigger description cannot be parsed")
 
 
 def get_trigger_type(trigger_description):

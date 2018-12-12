@@ -12,8 +12,11 @@
     "sell_order": "MARKET",
     "commission": 10
   },
-  "created_at": "Fri Dec  7 19:25:28 2018",
-  "updated_at": "Fri Dec  7 19:25:28 2018",
+  "created_at": "Tue Dec 11 18:57:17 2018",
+  "updated_at": "Tue Dec 11 18:57:17 2018",
   "activity_history": [],
-  "state_history": []
+  "state_history": [
+    "WATCHING"
+  ],
+  "trade_id": "strategy::mock::827685899046"
 }

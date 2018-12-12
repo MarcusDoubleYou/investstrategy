@@ -14,7 +14,7 @@ class TradingIntegrationTests(unittest.TestCase):
 
     def test_trade_buy_sell(self):
         e = MockEmitter()
-        strategy = TradeStrategy(buy_trigger="price::>::2.0", sell_trigger="price::>::7.0", stop="price::<::5.0",
+        strategy = TradeStrategy(buy_trigger="price::>::2.0", sell_trigger="price::>::7.0", stop_trigger="price::<::5.0",
                                  quantity=10)
         trade = Trade(symbol="mock", strategy=strategy, mock=True)
         trader = MockTrader(trade)
@@ -27,7 +27,7 @@ class TradingIntegrationTests(unittest.TestCase):
 
     def test_trade_dont_buy(self):
         e = MockEmitter()
-        strategy = TradeStrategy(buy_trigger="price::>::20.0", sell_trigger="price::>::7.0", stop="price::<::5.0",
+        strategy = TradeStrategy(buy_trigger="price::>::20.0", sell_trigger="price::>::7.0", stop_trigger="price::<::5.0",
                                  quantity=10)
         trade = Trade(symbol="mock", strategy=strategy, mock=True)
         trader = MockTrader(trade)
@@ -39,7 +39,7 @@ class TradingIntegrationTests(unittest.TestCase):
 
     def test_trade_buy_holding(self):
         e = MockEmitter()
-        strategy = TradeStrategy(buy_trigger="price::>::2.0", sell_trigger="price::>::20.0", stop="price::<::0.5",
+        strategy = TradeStrategy(buy_trigger="price::>::2.0", sell_trigger="price::>::20.0", stop_trigger="price::<::0.5",
                                  quantity=10)
         trade = Trade(symbol="mock", strategy=strategy, mock=True)
         trader = MockTrader(trade)
@@ -52,7 +52,7 @@ class TradingIntegrationTests(unittest.TestCase):
     def test_trade_buy_stop_activated(self):
         e = MockEmitter()
         # stop should sell
-        strategy = TradeStrategy(buy_trigger="price::>::2.0", sell_trigger="price::>::20.0", stop="price::<::10.0",
+        strategy = TradeStrategy(buy_trigger="price::>::2.0", sell_trigger="price::>::20.0", stop_trigger="price::<::10.0",
                                  quantity=10)
         trade = Trade(symbol="mock", strategy=strategy, mock=True)
         trader = MockTrader(trade)

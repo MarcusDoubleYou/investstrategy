@@ -107,7 +107,7 @@ class StrategyEval:
     def create_trade_strategy(self, strategy_type="simple_increasing"):
         return TradeStrategy(buy_trigger="price::>::" + self.entry,
                              sell_trigger="price::>::" + self.target,
-                             stop="price::<::" + self.stop,
+                             stop_trigger="price::<::" + self.stop,
                              quantity=self.quantity)
 
     def json(self, log=True):

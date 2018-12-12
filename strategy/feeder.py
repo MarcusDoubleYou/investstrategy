@@ -28,6 +28,9 @@ class Emitter:
     def not_finished(self):
         pass
 
+    def tail(self):
+        return self._data.tail(1)
+
 
 class MockEmitter(Emitter):
     _index = 0
@@ -43,6 +46,10 @@ class MockEmitter(Emitter):
         if data is None:
             self._data = pd.DataFrame(np.random.randint(low=1, high=10, size=(len, 6)),
                                       columns=['price', 'vl', 'open', 'close', 'hi', 'last'])
+        else:
+            self._data = data
+
+        # assign mock data to data and set data to beginning
         self._mock_data = self._data
         self._data = self._mock_data.iloc[:1]
 

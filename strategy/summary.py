@@ -30,7 +30,13 @@ class TradeSummary:
         self.sell_price = sell_price
         self.gain = (sell_price - self.buy_price) * self.quantity - self.commission
 
-    def json(self, log=True):
+    def json(self, log=False):
+        j = json.dumps(self.__dict__)
+        if log:
+            print(j)
+        return j
+
+    def to_json(self, log=False):
         j = json.dumps(self.__dict__)
         if log:
             print(j)

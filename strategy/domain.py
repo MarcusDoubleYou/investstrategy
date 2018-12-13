@@ -143,7 +143,7 @@ class Trade:
         self.state_history = dict.get('state_history', self.state_history)
         self.activity_history = dict.get('activity_history', self.activity_history)
         self.buy_price = dict.get('buy_price', self.buy_price)
-        self.trade_id = dict.get('trade_id ', self.trade_id)
+        self.trade_id = dict.get('trade_id', self.trade_id)
 
         strategy_dict = dict.get('strategy', self.strategy)
         # would fail if loaded without having class init first

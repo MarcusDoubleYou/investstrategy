@@ -28,6 +28,29 @@ class RiskCalTests(unittest.TestCase):
         self.assertEqual(eval2.loss_per_stock_per, -0.25)
         self.assertFalse(eval2.ratio_worth())
 
+    def test_risk_target_percent(self):
+        #  sample from https://www.investopedia.com/terms/r/riskrewardratio.asp
+        eval2 = StrategyEval()
+        eval2.eval(20.0, "50%", 15, 100)
+        self.assertIsNotNone(eval2.json())
+        self.assertEqual(round(eval2.risk_reward_ratio), 2)
+        self.assertEqual(eval2.loss, -510.0)
+        self.assertEqual(eval2.win, 990.0)
+        self.assertEqual(eval2.loss_per_stock, -5)
+        self.assertEqual(eval2.loss_per_stock_per, -0.25)
+        self.assertFalse(eval2.ratio_worth())
+
+    def test_risk_strings(self):
+        eval2 = StrategyEval()
+        eval2.eval("20.0", "50%", "15", 100.5)
+        self.assertIsNotNone(eval2.json())
+        self.assertEqual(round(eval2.risk_reward_ratio), 2)
+        self.assertEqual(eval2.loss, -510.0)
+        self.assertEqual(eval2.win, 990.0)
+        self.assertEqual(eval2.loss_per_stock, -5)
+        self.assertEqual(eval2.loss_per_stock_per, -0.25)
+        self.assertFalse(eval2.ratio_worth())
+
     def test_risk_investment(self):
         #  sample from https://www.investopedia.com/terms/r/riskrewardratio.asp
         eval2 = StrategyEval()

@@ -68,12 +68,15 @@ class TradeStrategyTest(unittest.TestCase):
         path_load = "resources/sample_trade_2.json"
 
         refreshed = Trade().load(path=path_load)
+        # refreshed = Trade(symbol='a').load(path=path_load)
         self.assertIsNotNone(refreshed)
         self.assertEqual(refreshed.symbol, "aapl")
         self.assertEqual(refreshed.active, False)
         self.assertEqual(refreshed.mock, False)
         self.assertEqual(refreshed.strategy.buy_trigger, "price::>::99.0")
         self.assertEqual(refreshed.strategy.sell_trigger, "price::<::999.0")
+        self.assertIsNotNone(refreshed.trade_id)
+        self.assertFalse(refreshed.trade_id.__contains__("None"))
 
     def test_load_json_string(self):
         path_load = "resources/sample_trade_2.json"

@@ -63,18 +63,17 @@ class StrategyEval:
         self.win_per_stock = self.target - self.entry
 
     def eval(self, entry, target, stop, quantity, commission=10):
-        self.quantity = quantity
-        self.entry = entry
-        self.target = target
-        self.stop = stop
+        self.quantity = int(quantity)
+        self.entry = float(entry)
+        # target can be given as percentage gain
+        if type(target) is str:
+            target = (float(str(target).replace("%", "")) / 100) * self.entry + self.entry
+        self.target = float(target)
+        self.stop = float(stop)
         self._calc()
-        self.commission = commission
-        if not stop < entry < target:
+        self.commission = float(commission)
+        if not self.stop < self.entry < self.target:
             raise Exception("strategy has invalid values verify entry, target and stop")
-        return self
-
-    def eval_strategy(self, strategy: BaseStrategy):
-        self.eval(strategy.entry, strategy.target, strategy.stop, strategy.quantity)
         return self
 
     def ratio_worth(self, risk_reward_ratio=2):
@@ -125,3 +124,10 @@ class StrategyEval:
 
     def to_json(self):
         return self.__dict__
+
+    @DeprecationWarning
+    def eval_strategy(self, strategy: BaseStrategy):
+        # todo implemented against strategy
+        # only simple strategy would work
+        self.eval(strategy.entry, strategy.target, strategy.stop, strategy.quantity)
+        return self

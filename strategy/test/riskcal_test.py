@@ -57,7 +57,7 @@ class RiskCalTests(unittest.TestCase):
         eval2.eval_with_loss_of_investment(20, 30, 2000, 500)
         self.assertIsNotNone(eval2.json())
         self.assertEqual(round(eval2.risk_reward_ratio), 2)
-        self.assertEqual(eval2.loss, -510.0)
+        self.assertEqual(round(eval2.loss), -510.0)
         self.assertEqual(eval2.win, 980.0)
 
     def test_risk_investment_percent(self):
@@ -65,7 +65,7 @@ class RiskCalTests(unittest.TestCase):
         eval2.eval_with_loss_of_investment(20, 30, 2000, acceptable_loss="25%")
         self.assertIsNotNone(eval2.json())
         self.assertEqual(round(eval2.risk_reward_ratio), 2)
-        self.assertEqual(eval2.loss, -510.0)
+        self.assertEqual(round(eval2.loss), -510.0)
         self.assertEqual(eval2.win, 980.0)
 
     def test_risk_investment_commission(self):
@@ -73,7 +73,7 @@ class RiskCalTests(unittest.TestCase):
         eval2.eval_with_loss_of_investment(20, 30, 2000, "25%", commission=20)
         self.assertIsNotNone(eval2.json())
         self.assertEqual(round(eval2.risk_reward_ratio), 2)
-        self.assertEqual(eval2.loss, -520.0)
+        self.assertEqual(round(eval2.loss), -520.0)
         self.assertEqual(eval2.win, 970.0)
         self.assertEqual(eval2.commission, 20.0)
 
@@ -82,7 +82,7 @@ class RiskCalTests(unittest.TestCase):
         eval2.eval_with_loss_of_investment(20, "50%", 2000, "25%", commission=20)
         self.assertIsNotNone(eval2.json())
         self.assertEqual(round(eval2.risk_reward_ratio), 2)
-        self.assertEqual(eval2.loss, -520.0)
+        self.assertEqual(round(eval2.loss, 1), -520.0)
         self.assertEqual(eval2.win, 970.0)
         self.assertEqual(eval2.commission, 20.0)
 

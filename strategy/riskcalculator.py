@@ -50,17 +50,18 @@ class StrategyEval:
         if self.entry < 0.0 or self.target < 0.0 or self.quantity < 0.0:
             raise AssertionError("values cannot be less or equal to 0.0")
 
+        self.stop = round(self.stop, 4)
         self.investment = self.quantity * self.entry + self.commission
-        self.win = (self.quantity * self.target) - self.investment
-        self.loss = (self.quantity * self.stop) - self.investment
-        self.risk_reward_ratio = self.win / self.loss * -1
+        self.win = round((self.quantity * self.target) - self.investment, 4)
+        self.loss = round((self.quantity * self.stop) - self.investment, 4)
+        self.risk_reward_ratio = round(self.win / self.loss * -1, 4)
         self.risk_reward_ratio_per = "1/" + str(self.risk_reward_ratio)
         self.roi = (((self.quantity * self.target) - self.investment) / self.investment)  # * -1
-        self.roi_per = str(self.roi * 100) + "%"
-        self.loss_per_stock_per = (self.stop - self.entry) / self.entry
-        self.loss_per_stock = self.stop - self.entry
-        self.win_per_stock_per = (self.target - self.entry) / self.entry
-        self.win_per_stock = self.target - self.entry
+        self.roi_per = str(round(self.roi * 100, 4)) + "%"
+        self.loss_per_stock_per = round((self.stop - self.entry) / self.entry, 4)
+        self.loss_per_stock = round(self.stop - self.entry, 4)
+        self.win_per_stock_per = round((self.target - self.entry) / self.entry, 4)
+        self.win_per_stock = round(self.target - self.entry, 4)
 
     def eval(self, entry, target, stop, quantity, commission=10):
         self.quantity = int(quantity)

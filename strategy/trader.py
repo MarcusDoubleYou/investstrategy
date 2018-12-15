@@ -6,7 +6,7 @@ import json
 
 from strategy.domain import Trade, TradeSummary
 from strategy.trigger import SimpleTrigger
-from strategy.utils import TradeState, ProjectTime
+from strategy.utils import TradeState, ProjectTime, remove_key
 
 
 class MarketDataFeederType:
@@ -110,11 +110,11 @@ class Trader:
     """
 
     trade: Trade = None
-    data = None
-    emitter = None
     config: TraderConfig = None
+    emitter = None
+    data = None
 
-    def __init__(self, trade, config: TraderConfig = None) -> None:
+    def __init__(self, trade: Trade, config: TraderConfig = None) -> None:
         super().__init__()
         self.trade = trade
         self.trade.active = True
@@ -201,7 +201,9 @@ class Trader:
         pass
 
     def to_json(self):
-        return json.dumps(self.__dict__, default=lambda o: o.to_json())
+        _dict = remove_key(self.__dict__, "data")
+        _dict = remove_key(_dict, "emitter")
+        return json.dumps(_dict, default=lambda o: o.to_json())
 
 
 class MockTrader(Trader):

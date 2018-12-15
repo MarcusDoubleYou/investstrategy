@@ -22,13 +22,6 @@ class OrderType:
     STOP_LOSS = "STOP_LOSS"
 
 
-"""
-sample use:
-json.dumps(remove_key(self.__dict__, 'data'))
-
-"""
-
-
 class ProjectTime:
     @staticmethod
     def string_time():
@@ -36,6 +29,12 @@ class ProjectTime:
 
 
 def remove_key(d, key):
+    """
+    sample use:
+    json.dumps(remove_key(self.__dict__, 'data'))
+
+    """
     r = dict(d)
-    del r[key]
+    if r.__contains__(key):
+        del r[key]
     return r

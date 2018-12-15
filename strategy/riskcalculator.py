@@ -51,12 +51,12 @@ class StrategyEval:
             raise AssertionError("values cannot be less or equal to 0.0")
 
         self.stop = round(self.stop, 4)
-        self.investment = self.quantity * self.entry + self.commission
+        self.investment = round(self.quantity * self.entry + self.commission, 2)
         self.win = round((self.quantity * self.target) - self.investment, 4)
         self.loss = round((self.quantity * self.stop) - self.investment, 4)
         self.risk_reward_ratio = round(self.win / self.loss * -1, 4)
         self.risk_reward_ratio_per = "1/" + str(self.risk_reward_ratio)
-        self.roi = (((self.quantity * self.target) - self.investment) / self.investment)  # * -1
+        self.roi = round((((self.quantity * self.target) - self.investment) / self.investment), 4)  # * -1
         self.roi_per = str(round(self.roi * 100, 4)) + "%"
         self.loss_per_stock_per = round((self.stop - self.entry) / self.entry, 4)
         self.loss_per_stock = round(self.stop - self.entry, 4)

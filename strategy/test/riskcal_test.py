@@ -110,6 +110,18 @@ class RiskCalTests(unittest.TestCase):
         self.assertIsNotNone(strategy.quantity)
         self.assertIsNotNone(strategy.commission)
 
+    def test_create_strategy_from_risk_3(self):
+        eval2 = StrategyEval()
+        eval2.eval_with_loss_of_investment(7.75, "4.5%", 1000, 100, commission=10)
+        strategy = eval2.create_trade_strategy()
+        print(eval2.json())
+        self.assertIsNotNone(strategy)
+        self.assertIsNotNone(strategy.buy_trigger)
+        self.assertIsNotNone(strategy.sell_order)
+        self.assertIsNotNone(strategy.stop_trigger)
+        self.assertIsNotNone(strategy.quantity)
+        self.assertIsNotNone(strategy.commission)
+
 
 if __name__ == '__main__':
     unittest.main()

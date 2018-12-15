@@ -9,6 +9,83 @@ from strategy.trigger import SimpleTrigger
 from strategy.utils import TradeState, ProjectTime
 
 
+class MarketDataFeederType:
+    REAL_TIME = "REAL_TIME"
+    MOCK_DATA = "MOCK_DATA"
+    REAL_DATA_REPLAY = "REAL_DATA_REPLAY"
+
+
+# py 3.7
+# @dataclass
+class TraderConfig:
+    """
+    needs to be merged with trader class or maybe become part of the trader class
+    configures how data will be pulled and what kind of data will be used
+    """
+    symbol: str = "mock"
+    feeder_type: str = MarketDataFeederType.MOCK_DATA
+    env: str = "test"
+    # wait time between trader pulling the feeder
+    market_data_pull_interval_sec: int = 5
+    # timeintervall of market data (1min, 5min .. .)
+    market_data_interval: str = "1min"
+    trader_address: str = "localhost"
+    startdate_days_ago: int = 1
+    enddate_days_ago: int = 0
+
+    def __init__(self,
+                 symbol: str = "mock",
+                 feeder_type: str = MarketDataFeederType.MOCK_DATA,
+                 env: str = "test",
+                 market_data_pull_interval_sec: int = 5,
+                 market_data_interval: str = "1min",
+                 trader_address: str = "localhost",
+                 startdate_days_ago: int = 1,
+                 enddate_days_ago: int = 0
+                 ) -> None:
+        super().__init__()
+        self.env = env
+        self.enddate_days_ago = enddate_days_ago
+        self.startdate_days_ago = startdate_days_ago
+        self.trader_address = trader_address
+        self.market_data_interval = market_data_interval
+        self.market_data_pull_interval_sec = market_data_pull_interval_sec
+        self.feeder_type = feeder_type
+        self.symbol = symbol
+
+    def get_feeder(self):
+        """ subclass overwrites in order integrate with remote data source  """
+        pass
+
+    # def get_feeder(self):
+    #     if self.feeder_type == MarketDataFeederType.MOCK_DATA:
+    #         return MockEmitter(len=1000)
+    #
+    #     elif self.feeder_type == MarketDataFeederType.REAL_TIME:
+    #         return BrokerEmitter(symbol=self.symbol, interval=self.market_data_interval)
+    #     elif self.feeder_type == MarketDataFeederType.REAL_DATA_REPLAY:
+    #
+    #         df = marketdata.get_marketdata_df(symbols=self.symbol,
+    #                                           interval=self.market_data_interval,
+    #                                           startdate=datetimeutils.past_market_time(self.startdate_days_ago),
+    #                                           enddate=datetimeutils.past_market_time(self.enddate_days_ago))
+    #         return MockEmitter(data=df)
+    #     else:
+    #         raise NotImplementedError("market data feeder cannot be instantiated for type.")
+
+    def to_json(self):
+        # py 3.7
+        #     return asdict(self)
+        return self.__dict__
+
+    def from_json(self):
+        pass
+
+
+def default_config():
+    return TraderConfig()
+
+
 class Trader:
     """
     Basic Trader
@@ -21,11 +98,17 @@ class Trader:
     trade: Trade = None
     data = None
     emitter = None
+    config: TraderConfig = None
 
-    def __init__(self, trade) -> None:
+    def __init__(self, trade, config: TraderConfig = None) -> None:
         super().__init__()
         self.trade = trade
         self.trade.active = True
+        if config is None:
+            self.config = default_config()
+        else:
+            self.config = config
+        self.config.symbol = trade.symbol
 
     def buy(self):
         # TODO infer trigger type based on description
@@ -139,6 +222,9 @@ class MockTrader(Trader):
 
 
 class AgentTrader(Trader):
+    """
+    check out the trader project
+    """
     pass
 
 

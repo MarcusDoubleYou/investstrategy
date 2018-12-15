@@ -87,6 +87,7 @@ class StaticStrategy(object):
             print(j)
         return j
 
+
 @DeprecationWarning
 class BaseStrategy(object):
     symbol = None
@@ -174,6 +175,7 @@ class BaseStrategy(object):
         if log:
             print(j)
         return j
+
 
 @DeprecationWarning
 class SimpleMomentumStrategy(BaseStrategy):

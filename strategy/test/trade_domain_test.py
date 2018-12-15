@@ -3,12 +3,14 @@ import numpy as np
 import unittest
 import os, shutil
 
+from strategy import trader
 from strategy.domain import TradeStrategy, Trade
 from strategy.test import utils
+from strategy.trader import MockTrader, MarketDataFeederType, TraderConfig
 from strategy.utils import ProjectTime
 
 
-class TradeStrategyTest(unittest.TestCase):
+class TradeDomainTest(unittest.TestCase):
 
     def tearDown(self):
         utils.clean_temp_directory()
@@ -23,6 +25,29 @@ class TradeStrategyTest(unittest.TestCase):
         self.assertIsNotNone(s.to_json())
         print(s.to_json())
 
+    def test_trader_config(self):
+        s = TradeStrategy(buy_trigger="hi::>::10.0", sell_trigger="lo::<::11.0", stop_trigger="lo::<::11.0",
+                          quantity=10)
+        t = Trade(symbol="lee", strategy=s, mock=True)
+        trader = MockTrader(t)
+        self.assertIsNotNone(trader)
+        self.assertEqual(trader.config.env, "test")
+        self.assertEqual(trader.config.feeder_type, MarketDataFeederType.MOCK_DATA)
+        self.assertEqual(trader.config.symbol, "lee")
+
+    def test_trader_custom_config(self):
+        s = TradeStrategy(buy_trigger="hi::>::10.0", sell_trigger="lo::<::11.0", stop_trigger="lo::<::11.0",
+                          quantity=10)
+        t = Trade(symbol="lee", strategy=s)
+        config = TraderConfig(env="dev", feeder_type=MarketDataFeederType.REAL_DATA_REPLAY,
+                              market_data_interval="5min", market_data_pull_interval_sec=10)
+        trader = MockTrader(t, config)
+        self.assertIsNotNone(trader)
+        self.assertEqual(trader.config.env, config.env)
+        self.assertEqual(trader.config.feeder_type, config.feeder_type)
+        self.assertEqual(trader.config.symbol, config.symbol)
+
+
     def test_simple_trade(self):
         s = TradeStrategy(buy_trigger="hi::>::10.0", sell_trigger="lo::<::11.0", stop_trigger="lo::<::11.0",
                           quantity=10)
@@ -36,6 +61,11 @@ class TradeStrategyTest(unittest.TestCase):
         self.assertIsNotNone(t.to_json())
         print(t.to_json())
         t.persist("temp")
+
+    def test_default_config(self):
+        config = trader.default_config()
+        self.assertIsNotNone(config)
+        self.assertEqual(config.env, "test")
 
     def test_persist_and_load_json(self):
         path = "temp/"

@@ -77,9 +77,9 @@ class SimpleTrigger(TradeTrigger):
 
     def eval_trigger_condition(self, data):
         if self._comparator == ">":
-            return data[self._df_variable].values[-1] >= float(self._target_value)
+            return float(data[self._df_variable].values[-1]) >= float(self._target_value)
         elif self._comparator == "<":
-            return data[self._df_variable].values[-1] <= float(self._target_value)
+            return float(data[self._df_variable].values[-1]) <= float(self._target_value)
         else:
             # better exc
             raise Exception
@@ -98,9 +98,9 @@ class IndicatorTrigger(TradeTrigger):
 
     def eval_trigger_condition(self, data):
         if self._comparator == ">":
-            return data[self._df_variable].values[-1] >= data[self._df_target_variable].values[-1]
+            return float(data[self._df_variable].values[-1]) >= float(data[self._df_target_variable].values[-1])
         elif self._comparator == "<":
-            return data[self._df_variable].values[-1] <= data[self._df_target_variable].values[-1]
+            return float(data[self._df_variable].values[-1]) <= float(data[self._df_target_variable].values[-1])
         else:
             # better exc
             raise Exception("trigger condition could not be evaluated")

@@ -86,6 +86,20 @@ def default_config():
     return TraderConfig()
 
 
+def from_dict(config_dict):
+    if config_dict is None:
+        return None
+    return TraderConfig(env=config_dict.get('env'),
+                        symbol=config_dict.get('symbol'),
+                        feeder_type=config_dict.get('feeder_type'),
+                        market_data_pull_interval_sec=config_dict.get('market_data_pull_interval_sec'),
+                        market_data_interval=config_dict.get('market_data_interval'),
+                        trader_address=config_dict.get('trader_address'),
+                        startdate_days_ago=config_dict.get('startdate_days_ago'),
+                        enddate_days_ago=config_dict.get('enddate_days_ago')
+                        )
+
+
 class Trader:
     """
     Basic Trader

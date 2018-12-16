@@ -1,6 +1,6 @@
 import unittest
 
-from strategy.domain import Trade
+from strategy.trade import Trade
 from strategy.feeder import MockEmitter
 from strategy.riskcalculator import StrategyEval
 from strategy.test import utils

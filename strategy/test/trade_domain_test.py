@@ -4,7 +4,7 @@ import unittest
 import os, shutil
 
 from strategy import trader
-from strategy.domain import TradeStrategy, Trade
+from strategy.trade import TradeStrategy, Trade
 from strategy.test import utils
 from strategy.trader import MockTrader, MarketDataFeederType, TraderConfig
 from strategy.utils import ProjectTime

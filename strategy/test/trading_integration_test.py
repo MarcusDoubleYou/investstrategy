@@ -1,6 +1,6 @@
 import unittest
 
-from strategy.domain import TradeStrategy, Trade
+from strategy.trade import TradeStrategy, Trade
 from strategy.feeder import MockEmitter
 from strategy.test import utils
 from strategy.test.mock_emitter import Emitter
@@ -56,6 +56,9 @@ class TradingIntegrationTests(unittest.TestCase):
 
         self.assertTrue(trader.trade.active)
         self.assertEqual(trader.trade.state, TradeState.HOLDING)
+        self.assertIsNotNone(trader.trade.summary)
+        self.assertIsNotNone(trader.trade.summary.gain)
+        self.assertNotEqual(trader.trade.summary.gain, 0)
 
     def test_trade_buy_stop_activated(self):
         e = MockEmitter()
@@ -72,7 +75,6 @@ class TradingIntegrationTests(unittest.TestCase):
         self.assertEqual(trader.trade.state, TradeState.FINISHED)
         self.assertIsNotNone(trader.trade.summary)
         print(trader.trade.summary.to_json())
-
 
 
 if __name__ == '__main__':

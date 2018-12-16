@@ -16,6 +16,7 @@ class StrategyName:
     SHORT_SQUEEZE = "SHORT_SQUEEZE"
 
 
+# TODO gain
 class TradeStrategy:
     buy_trigger = None
     buy_order = None

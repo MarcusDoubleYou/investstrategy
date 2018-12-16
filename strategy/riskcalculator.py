@@ -1,7 +1,7 @@
 import json
 import math
 
-from strategy.domain import TradeStrategy, StrategyName
+from strategy.trade import TradeStrategy, StrategyName
 from strategy.strategies import BaseStrategy
 
 

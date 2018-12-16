@@ -4,7 +4,7 @@
 '''
 import json
 
-from strategy.domain import Trade, TradeSummary
+from strategy.trade import Trade, TradeSummary
 from strategy.trigger import SimpleTrigger
 from strategy.utils import TradeState, ProjectTime, remove_key
 
@@ -140,6 +140,9 @@ class Trader:
         if self.trade.state == TradeState.WATCHING:
             self.buy()
         elif self.trade.state == TradeState.HOLDING:
+            self.trade.summary.gain = (self.trade.summary.quantity * (
+                    float(self.data.tail(1)['last'].values[0]) - float(
+                self.trade.summary.buy_price))) - self.trade.summary.commission
             self.sell()
         elif self.trade.state == TradeState.PLACED_BUY_ORDER:
             self.waiting_to_fulfil_order()
@@ -209,6 +212,9 @@ class MockTrader(Trader):
             print("order has been placed waiting to be fulfilled ")
             self.change_state(TradeState.HOLDING)
             self.trade.buy_price = float(self.data.tail(1)['last'].values[0])
+            self.trade.summary = TradeSummary(symbol=self.trade.symbol, buy_price=self.trade.buy_price,
+                                              quantity=self.trade.strategy.quantity,
+                                              commission=self.trade.strategy.commission)
         elif self.trade.state == TradeState.PLACED_SELL_ORDER:
             self.finish()
             self.change_state(TradeState.FINISHED)

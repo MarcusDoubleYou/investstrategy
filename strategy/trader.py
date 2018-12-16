@@ -54,24 +54,8 @@ class TraderConfig:
         self.symbol = symbol
 
     def get_feeder(self):
-        """ subclass overwrites in order integrate with remote data source  """
+        """ subclass overwrites in order integrate with remote data source. see trader-app project  """
         pass
-
-    # def get_feeder(self):
-    #     if self.feeder_type == MarketDataFeederType.MOCK_DATA:
-    #         return MockEmitter(len=1000)
-    #
-    #     elif self.feeder_type == MarketDataFeederType.REAL_TIME:
-    #         return BrokerEmitter(symbol=self.symbol, interval=self.market_data_interval)
-    #     elif self.feeder_type == MarketDataFeederType.REAL_DATA_REPLAY:
-    #
-    #         df = marketdata.get_marketdata_df(symbols=self.symbol,
-    #                                           interval=self.market_data_interval,
-    #                                           startdate=datetimeutils.past_market_time(self.startdate_days_ago),
-    #                                           enddate=datetimeutils.past_market_time(self.enddate_days_ago))
-    #         return MockEmitter(data=df)
-    #     else:
-    #         raise NotImplementedError("market data feeder cannot be instantiated for type.")
 
     def to_json(self):
         # py 3.7

@@ -85,8 +85,8 @@ class Trade:
         self.activity_history = []
         self.state_history = [state]
         self.trade_id = trade_id
-        if self.trade_id is None:
-            self.trade_id = "strategy::" + str(self.symbol) + "::" + str(
+        if self.trade_id is None and symbol is not None:
+            self.trade_id = "trade::" + str(self.symbol) + "::" + str(
                 round(random.Random().random() * 1000000000000))
 
     def to_json(self, log=False):
@@ -144,6 +144,11 @@ class Trade:
         self.activity_history = dict.get('activity_history', self.activity_history)
         self.buy_price = dict.get('buy_price', self.buy_price)
         self.trade_id = dict.get('trade_id', self.trade_id)
+
+        # in case trade id was not supplied through json file
+        if self.trade_id is None:
+            self.trade_id = "trade::" + str(self.symbol) + "::" + str(
+                round(random.Random().random() * 1000000000000))
 
         strategy_dict = dict.get('strategy', self.strategy)
         # would fail if loaded without having class init first

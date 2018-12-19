@@ -140,9 +140,9 @@ class Trader:
         if self.trade.state == TradeState.WATCHING:
             self.buy()
         elif self.trade.state == TradeState.HOLDING:
-            self.trade.summary.gain = (self.trade.summary.quantity * (
-                    float(self.data.tail(1)['last'].values[0]) - float(
-                self.trade.summary.buy_price))) - self.trade.summary.commission
+            self.trade.summary.gain = round(
+                (self.trade.summary.quantity * (float(self.data.tail(1)['last'].values[0]) - float(
+                    self.trade.summary.buy_price))) - self.trade.summary.commission, 3)
             self.sell()
         elif self.trade.state == TradeState.PLACED_BUY_ORDER:
             self.waiting_to_fulfil_order()

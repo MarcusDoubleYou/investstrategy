@@ -5,7 +5,7 @@ import numpy as np
 
 from strategy import preparedata
 from strategy.feeder import MockEmitter
-from strategy.trigger import IndicatorTrigger, SimpleTrigger
+from strategy.trigger import IndicatorTrigger, SimpleTrigger, NestedTrigger
 
 
 class TriggerTests(unittest.TestCase):
@@ -73,16 +73,25 @@ class TriggerTests(unittest.TestCase):
             st.active(e.emit())
         self.assertTrue(st.triggered)
 
-    # todo needs to be implemented
-    def _test_multiple_trigger(self):
+    def test_nested_trigger(self):
         df = pd.read_csv("resources/2018-12-25-ams-5min.csv")
         df = preparedata.add_moving_averages(df)
         e = MockEmitter(data=df)
-        st = IndicatorTrigger("ema_20::<::last0&&sma_200::<::last")
+        st = NestedTrigger("ema_20::<::last::type=ti&&sma_200::<::last::type=ti")
 
         while e.not_finished() and not st.triggered:
             st.active(e.emit())
         self.assertTrue(st.triggered)
+
+    def test_nested_false(self):
+        df = pd.read_csv("resources/2018-12-25-ams-5min.csv")
+        df = preparedata.add_moving_averages(df)
+        e = MockEmitter(data=df)
+        st = NestedTrigger("ema_20::<::last::type=ti&&sma_200::<::last::type=ti&&last::<::2.10")
+
+        while e.not_finished() and not st.triggered:
+            st.active(e.emit())
+        self.assertFalse(st.triggered)
 
 
 if __name__ == '__main__':

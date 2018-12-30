@@ -6,6 +6,7 @@ base class
 takes a data => feeder
 '''
 
+NESTED_TRIGGER = "&&"
 
 class TradeTrigger:
     buy = True
@@ -52,11 +53,25 @@ def trigger_parts(trigger_description):
         return parts[0], parts[1], parts[2]
     elif str(trigger_description).__contains__("condition"):
         return
-
     elif parts.__len__() == 4:
         return parts[0], parts[1], parts[2], parts[3]
     else:
         raise TriggerException("trigger description cannot be parsed")
+
+
+def convert_string_trigger_to_obj(trigger_string):
+    if "&&" in trigger_string:
+        return NestedTrigger(trigger_string)
+    if len(trigger_string.split("::")) == 3:
+        return SimpleTrigger(trigger_string)
+    elif len(trigger_string.split("::")) == 4:
+        if trigger_string.split("::")[3] == "type=ti" \
+                or trigger_string.split("::")[3] == "type=technical_indicator":
+            trigger_string = trigger_string.replace("::type=ti", "")
+            trigger_string = trigger_string.replace("::type=technical_indicator", "")
+            return IndicatorTrigger(trigger_string)
+    elif len(trigger_string.split("::")) < 4:
+        raise NotImplemented(trigger_string + "trigger cannot be parsed")
 
 
 def get_trigger_type(trigger_description):
@@ -86,6 +101,30 @@ class SimpleTrigger(TradeTrigger):
         else:
             # better exc
             raise Exception
+
+
+class NestedTrigger(TradeTrigger):
+    '''
+    lets user combine multiple triggers
+    '''
+    triggers = []
+
+    def __init__(self, trigger_description, buy=True) -> None:
+        super().__init__(buy)
+        for trigger in trigger_description.split("&&"):
+            self.triggers.append(convert_string_trigger_to_obj(trigger))
+
+    def eval_trigger_condition(self, data):
+        '''
+        all trigger conditions need to be true
+        exit early if one is false
+        :param data:
+        :return:
+        '''
+        for trigger in self.triggers:
+            if not trigger.eval_trigger_condition(data):
+                return False
+        return True
 
 
 class IndicatorTrigger(TradeTrigger):

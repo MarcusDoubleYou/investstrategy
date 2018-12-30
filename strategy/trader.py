@@ -5,7 +5,7 @@
 import json
 
 from strategy.trade import Trade, TradeSummary
-from strategy.trigger import SimpleTrigger
+from strategy.trigger import SimpleTrigger, IndicatorTrigger
 from strategy.utils import TradeState, ProjectTime, remove_key
 
 
@@ -108,17 +108,28 @@ class Trader:
             self.config = config
         self.config.symbol = trade.symbol
 
+    def _convert_trigger_type(self, trigger_string):
+        if len(trigger_string.split("::")) == 3:
+            return SimpleTrigger(trigger_string)
+        elif len(trigger_string.split("::")) == 4:
+            if trigger_string.split("::")[3] == "type=ti" \
+                    or trigger_string.split("::")[3] == "type=technical_indicator":
+                trigger_string = trigger_string.replace("::type=ti", "")
+                trigger_string = trigger_string.replace("::type=technical_indicator", "")
+                return IndicatorTrigger(trigger_string)
+        elif len(trigger_string.split("::")) < 4:
+            raise NotImplemented(trigger_string + "trigger cannot be parsed")
+
     def buy(self):
         # TODO infer trigger type based on description
-        t = SimpleTrigger(self.trade.strategy.buy_trigger)
+        t = self._convert_trigger_type(self.trade.strategy.buy_trigger)
         if t.eval_trigger_condition(self.data):
             self.place_order(buy=True)
         pass
 
     def sell(self):
-        t = SimpleTrigger(self.trade.strategy.sell_trigger)
-        # if type(self.trade.strategy.stop_trigger) == float:
-        stop = SimpleTrigger(self.trade.strategy.stop_trigger)
+        t = self._convert_trigger_type(self.trade.strategy.sell_trigger)
+        stop = self._convert_trigger_type(self.trade.strategy.stop_trigger)
         if t.eval_trigger_condition(self.data) or stop.eval_trigger_condition(self.data):
             self.place_order(buy=False)
         pass

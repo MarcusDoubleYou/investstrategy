@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='strategy',
-    version='0.2.2',
+    version='0.2.3',
     author='iMrx',
     author_email='developer@irmx.com',
     url='https://github.com/MarcusDoubleYou/investstrategy',

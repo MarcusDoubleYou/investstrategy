@@ -3,6 +3,7 @@ import unittest
 
 import numpy as np
 
+from strategy import preparedata
 from strategy.feeder import MockEmitter
 from strategy.trigger import IndicatorTrigger, SimpleTrigger
 
@@ -51,6 +52,37 @@ class TriggerTests(unittest.TestCase):
         while e.not_finished() and not st.triggered:
             st.active(e.emit())
         self.assertFalse(st.triggered)
+
+    def test_trigger_sma_200(self):
+        df = pd.read_csv("resources/aapl::2018-06-01::1min.csv")
+        df = preparedata.add_moving_averages(df)
+        e = MockEmitter(data=df)
+        st = SimpleTrigger("sma_200::>::10.10")
+
+        while e.not_finished() and not st.triggered:
+            st.active(e.emit())
+        self.assertTrue(st.triggered)
+
+    def test_trigger_sma_200_(self):
+        df = pd.read_csv("resources/2018-12-25-ams-5min.csv")
+        df = preparedata.add_moving_averages(df)
+        e = MockEmitter(data=df)
+        st = IndicatorTrigger("ema_20::>::sma_200")
+
+        while e.not_finished() and not st.triggered:
+            st.active(e.emit())
+        self.assertTrue(st.triggered)
+
+    # todo needs to be implemented
+    def _test_multiple_trigger(self):
+        df = pd.read_csv("resources/2018-12-25-ams-5min.csv")
+        df = preparedata.add_moving_averages(df)
+        e = MockEmitter(data=df)
+        st = IndicatorTrigger("ema_20::<::last0&&sma_200::<::last")
+
+        while e.not_finished() and not st.triggered:
+            st.active(e.emit())
+        self.assertTrue(st.triggered)
 
 
 if __name__ == '__main__':

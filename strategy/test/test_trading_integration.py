@@ -1,5 +1,8 @@
 import unittest
 
+import pandas as pd
+
+from strategy import preparedata
 from strategy.trade import TradeStrategy, Trade
 from strategy.feeder import MockEmitter
 from strategy.test import utils
@@ -65,6 +68,44 @@ class TradingIntegrationTests(unittest.TestCase):
         # stop should sell
         strategy = TradeStrategy(buy_trigger="price::>::2.0", sell_trigger="price::>::20.0",
                                  stop_trigger="price::<::10.0",
+                                 quantity=10)
+        trade = Trade(symbol="mock", strategy=strategy, mock=True)
+        trader = MockTrader(trade)
+        while e.not_finished() and trader.trade.active:
+            trader.follow_course(data=e.emit())
+
+        self.assertFalse(trader.trade.active)
+        self.assertEqual(trader.trade.state, TradeState.FINISHED)
+        self.assertIsNotNone(trader.trade.summary)
+        print(trader.trade.summary.to_json())
+
+    def test_trade_buy_sell_technical_indicator(self):
+        df = pd.read_csv("resources/aapl::2018-06-01::1min.csv")
+        df = preparedata.add_moving_averages(df)
+        e = MockEmitter(data=df)
+        # stop should sell
+        strategy = TradeStrategy(buy_trigger="sma_200::<::ema_20::type=ti",
+                                 sell_trigger="sma_200::>::sma_50::type=technical_indicator",
+                                 stop_trigger="last::<::1.0",
+                                 quantity=10)
+        trade = Trade(symbol="mock", strategy=strategy, mock=True)
+        trader = MockTrader(trade)
+        while e.not_finished() and trader.trade.active:
+            trader.follow_course(data=e.emit())
+
+        self.assertFalse(trader.trade.active)
+        self.assertEqual(trader.trade.state, TradeState.FINISHED)
+        self.assertIsNotNone(trader.trade.summary)
+        print(trader.trade.summary.to_json())
+
+    def test_trade_buy_sell_technical_indicator_2(self):
+        df = pd.read_csv("resources/2018-12-25-ams-5min.csv")
+        df = preparedata.add_moving_averages(df)
+        e = MockEmitter(data=df)
+        # stop should sell
+        strategy = TradeStrategy(buy_trigger="sma_200::<::last::type=ti",
+                                 sell_trigger="ema_20::>::last::type=ti",
+                                 stop_trigger="last::<::1.0",
                                  quantity=10)
         trade = Trade(symbol="mock", strategy=strategy, mock=True)
         trader = MockTrader(trade)

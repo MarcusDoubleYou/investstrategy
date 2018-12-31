@@ -29,7 +29,7 @@ class TradeSummary:
         self.end_time = ProjectTime().string_time()
         # self.holding_time = self.end_time - self.start_time
         self.sell_price = float(sell_price)
-        self.gain = float((self.sell_price - self.buy_price) * int(self.quantity) - self.commission)
+        self.gain = round(float((self.sell_price - self.buy_price) * int(self.quantity) - self.commission), 3)
         return self
 
     def to_json(self):

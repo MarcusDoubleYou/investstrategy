@@ -95,18 +95,18 @@ class TradingIntegrationTests(unittest.TestCase):
 
         self.assertFalse(trader.trade.active)
         self.assertEqual(trader.trade.state, TradeState.FINISHED)
-        self.assertIsNotNone(trader.trade.summary)
         print(trader.trade.summary.to_json())
 
     def test_trade_buy_sell_technical_indicator_2(self):
         df = pd.read_csv("resources/2018-12-25-ams-5min.csv")
+        # df = pd.read_csv("resources/aapl::2018-06-01::1min.csv")
         df = preparedata.add_moving_averages(df)
         e = MockEmitter(data=df)
         # stop should sell
-        strategy = TradeStrategy(buy_trigger="sma_200::<::last::type=ti",
-                                 sell_trigger="ema_20::>::last::type=ti",
+        strategy = TradeStrategy(buy_trigger="sma_200::<::last::type=ti&&ema_20::<::last::type=ti",
+                                 sell_trigger="ema_50::>::last::type=ti",
                                  stop_trigger="last::<::1.0",
-                                 quantity=10)
+                                 quantity=100)
         trade = Trade(symbol="mock", strategy=strategy, mock=True)
         trader = MockTrader(trade)
         while e.not_finished() and trader.trade.active:
@@ -114,7 +114,6 @@ class TradingIntegrationTests(unittest.TestCase):
 
         self.assertFalse(trader.trade.active)
         self.assertEqual(trader.trade.state, TradeState.FINISHED)
-        self.assertIsNotNone(trader.trade.summary)
         print(trader.trade.summary.to_json())
 
 

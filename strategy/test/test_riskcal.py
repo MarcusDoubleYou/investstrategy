@@ -122,6 +122,13 @@ class RiskCalTests(unittest.TestCase):
         self.assertIsNotNone(strategy.quantity)
         self.assertIsNotNone(strategy.commission)
 
+    def test_create_strategy_from_risk_real_values(self):
+        eval2 = StrategyEval()
+        eval2.eval_with_loss_of_investment(35.50, 35.75, 10000, 50, commission=10)
+        strategy = eval2.create_trade_strategy()
+        eval2.json()
+
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -82,3 +82,15 @@ def add_bollinger_band(df: pd.DataFrame, n=20, ndev=2, drop_times=True):
     # Add bollinger band low indicator filling Nans values
     df['bb_low'] = bollinger_lband_indicator(df["last"], n=n, ndev=ndev, fillna=True)
     return df
+
+
+# from docs https://technical-analysis-library-in-python.readthedocs.io/en/latest/ta.html#momentum-indicators
+def add_macd(df: pd.DataFrame, drop_times=True):
+    df['macd'] = ta.trend.macd(df['last'], n_fast=12, n_slow=26, fillna=False)
+    df['macd_diff'] = ta.trend.macd_diff(df['last'], n_fast=12, n_slow=26, fillna=False)
+    df['macd_signal'] = ta.trend.macd_signal(df['last'], n_fast=12, n_slow=26, fillna=False)
+    df['rsi'] = ta.rsi(df['last'])
+
+    df = df.drop("datetime", 1)
+
+    return df

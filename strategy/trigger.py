@@ -8,6 +8,7 @@ takes a data => feeder
 
 NESTED_TRIGGER = "&&"
 
+
 class TradeTrigger:
     buy = True
     triggered = False
@@ -152,6 +153,9 @@ class IndicatorTrigger(TradeTrigger):
             raise Exception("trigger condition could not be evaluated")
 
 
+# todo trade idea use didtance between 20 and 50 ema as sells indicator the bigger the distance the more likely is a reversal
+# todo not yet implemented
+# issues: for looking back only latest value in feed into trigger, but needed is latest-n periods
 class ConditionalIndicatorTrigger(TradeTrigger):
     """
     Conditions are evaluated in addition to regular trigger evaluation
